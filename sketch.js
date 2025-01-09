@@ -43,8 +43,13 @@ async function loadwords() {
     const data = await response.text();
 
     window.list = data
-        .split('/n')
-        .map(line => line.split(',')[1])
+        .split('\n')
+        .filter(line => line.trim() !== '')
+        .map(line => {
+          const word = line.split(',')[1];
+          return word ? word.trim().toUpperCase() : null;
+        })
+        .filter(word => word !== null)
         .map(word => word.toUpperCase());
 }
 
@@ -52,6 +57,7 @@ async function loadwords() {
 function generate_word() {
     return window.list[Math.floor(Math.random() * (window.list.length))];
 }
+
 function draw_board() {
   for (let i=0; i< guesses.length; i++) {
     for (let j=0; j < guesses[i].length; j++) {
@@ -66,12 +72,17 @@ function draw_board() {
   }
 }
 
-
 function handle_input(letter) {
   if (letter == '⌫') {
     guesses[current_turn][current_letter] = '';
     current_letter --;
     updateTileDisplay();
+  } else if (letter == 'ENTER'){
+    check_if_correct();
+    if (current_turn < 5) {
+      current_turn ++;
+    }
+    current_letter = 0;
   }
   else {
     guesses[current_turn][current_letter] = letter;
@@ -82,10 +93,30 @@ function handle_input(letter) {
   } 
 }
 
+function check_if_correct() {
+  let word_guessed = '';
+  for (let i=0; i<6; i++) {
+    word_guessed += guesses[current_turn][i];
+  }
+  console.log(word_guessed);
+  updateColors();
+}
+
 function updateTileDisplay () {
   for (let j = 0; j < 6; j++) {
     let tileIndex = current_turn * 6 + j;
     tile_buttons[tileIndex].html(guesses[current_turn][j]);
+  }
+}
+
+function updateColors() {
+  const wordArray = Array.from(word);
+  for (let i=0; i<6; i++) {
+    if (guesses[current_turn][i] == wordArray[i]) {
+      tile_buttons[current_turn * 6 + i].style('background-color', '#538d4e');
+    } else if(wordArray.includes(guesses[current_turn][i])) {
+      tile_buttons[current_turn * 6 + i].style('background-color', '#FFBF00')
+    }
   }
 }
 
@@ -111,10 +142,17 @@ function keyPressed () {
     handle_input(key.toUpperCase());
   } else if (keyCode === BACKSPACE) {
     handle_input('⌫');
+  } else if (keyCode === ENTER) {
+    check_if_correct();
+    if (current_turn < 5) {
+      current_turn ++;
+    }
+    current_letter = 0;
   }
 }
 
 async function startGame () {
   await loadwords();
   word = generate_word(); //generates a word for player to guess
+  console.log(word);
 }
