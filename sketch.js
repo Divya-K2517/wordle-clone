@@ -35,7 +35,6 @@ function draw() { //called continously
    textSize(50);
    fill(255); //title color
    text("Wordle (dupe)", windowWidth/2, windowHeight/10);
-   update_buttons();
 
 }
 
@@ -66,6 +65,7 @@ function draw_board() {
     }
   }
 }
+
 
 function handle_input(letter) {
   if (letter == '⌫') {
@@ -103,6 +103,14 @@ function draw_keyboard() {
 
       letter_buttons.push(letter_key);
     }
+  }
+}
+
+function keyPressed () {
+  if (key.length === 1 && key.match(/[a-z]/i)) {
+    handle_input(key.toUpperCase());
+  } else if (keyCode === BACKSPACE) {
+    handle_input('⌫');
   }
 }
 
