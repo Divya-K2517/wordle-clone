@@ -74,7 +74,9 @@ function draw_board() {
 
 function handle_input(letter) {
   if (letter == '⌫') {
-    current_letter --;
+    if (guesses[current_turn][current_letter] === '') {
+      current_letter--;
+    }
     guesses[current_turn][current_letter] = '';
     updateTileDisplay();
   } else if (letter == 'ENTER'){
@@ -123,31 +125,43 @@ function updateTileDisplay () {
 
 function updateColors() {
   let wordArray = Array.from(word);
+  let coloredIndices = new Set();
+  //green tiles
   for (let i=0; i<6; i++) {
-    if (guesses[current_turn][i] == wordArray[i]) {
+    if (guesses[current_turn][i] == wordArray[i]) { 
       //turning the tile green
       tile_buttons[current_turn * 6 + i].style('background-color', '#538d4e');
       //turning the key on the on-screen keyboard green
       let letter = letter_buttons.find(button => button.id === guesses[current_turn][i]);
       letter.style('background-color', '#538d4e');
       wordArray[i] = null;
-      //wordArray.splice(wordArray.indexOf(guesses[current_turn][i]), 1);
-    } else if(wordArray.includes(guesses[current_turn][i])) {
-      //turning the tile yellow
-      tile_buttons[current_turn * 6 + i].style('background-color', '#FFBF00')
-      //turning the key on the on-screen keyboard yellow
-      let letter = letter_buttons.find(button => button.id === guesses[current_turn][i]);
-      letter.style('background-color', '#FFBF00');
-      wordArray[i] = null;
-      //wordArray.splice(wordArray.indexOf(guesses[current_turn][i]), 1);
-    } else if(!wordArray.includes(guesses[current_turn][i])) {
+      coloredIndices.add(i);
+    }
+    
+    console.log(wordArray);
+  }
+
+  for (let i=0; i<6; i++) { //yellow tiles
+    if (!coloredIndices.has(i)) {
+      let index = wordArray.indexOf(guesses[current_turn][i]);
+      if (index !== -1) {
+        tile_buttons[current_turn * 6 + i].style('background-color', 'rgb(255,255,0)');
+        let letter = letter_buttons.find(button => button.id === guesses[current_turn][i]);
+        letter.style('background-color', 'rgb(255,255,0)');
+        wordArray[index] = null;
+        coloredIndices.add(i);
+      }
+    }
+  }
+
+  for (let i=0; i<6; i++) { //gray tiles
+    if (!coloredIndices.has(i) ){
       //turning the tile gray
-      tile_buttons[current_turn * 6 + i].style('background-color', 'rgb(93,93,93)')
-      //turning the key on the on-screen keyboard gray
+      tile_buttons[current_turn * 6 + i].style('background-color', 'rgb(93,93,93)');
+      //turning the key on the on-screen keyboard yellow
       let letter = letter_buttons.find(button => button.id === guesses[current_turn][i]);
       letter.style('background-color', 'rgb(93,93,93)');
       wordArray[i] = null;
-      //wordArray.splice(wordArray.indexOf(guesses[current_turn][i]), 1);
     }
   }
 }
