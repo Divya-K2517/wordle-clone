@@ -74,15 +74,17 @@ function draw_board() {
 
 function handle_input(letter) {
   if (letter == '⌫') {
-    guesses[current_turn][current_letter] = '';
     current_letter --;
+    guesses[current_turn][current_letter] = '';
     updateTileDisplay();
   } else if (letter == 'ENTER'){
-    check_if_correct();
-    if (current_turn < 5) {
+    if (current_turn < 5 && check_if_correct()) {
       current_turn ++;
+      current_letter = 0;
+    } else if (current_turn == 5) {
+      check_if_correct();
     }
-    current_letter = 0;
+    
   }
   else {
     guesses[current_turn][current_letter] = letter;
@@ -93,13 +95,25 @@ function handle_input(letter) {
   } 
 }
 
-function check_if_correct() {
+function check_if_correct() { //1 = correct answer, 2 = not enough letters, 3 = enough letters but wrong
   let word_guessed = '';
   for (let i=0; i<6; i++) {
     word_guessed += guesses[current_turn][i];
   }
+  if (word_guessed.length < 6) {
+    displayMessage("Not enough letters");
+    return 2;
+  }
   console.log(word_guessed);
   updateColors();
+  if (word_guessed == word) {
+    displayMessage("Congrats, you guessed the word!")
+    return 1;
+  } else if (word_guessed != word && current_turn == 5) {
+    displayMessage("Incorrect, the word was: `${word}`");
+    return 3;
+  }
+  return 3;
 }
 
 function updateTileDisplay () {
@@ -113,9 +127,26 @@ function updateColors() {
   const wordArray = Array.from(word);
   for (let i=0; i<6; i++) {
     if (guesses[current_turn][i] == wordArray[i]) {
+      //turning the tile green
       tile_buttons[current_turn * 6 + i].style('background-color', '#538d4e');
+      //turning the key on the on-screen keyboard green
+      let letter = letter_buttons.find(button => button.id === guesses[current_turn][i]);
+      letter.style('background-color', '#538d4e');
+      wordArray.splice(wordArray.indexOf(guesses[current_turn][i]), 1);
     } else if(wordArray.includes(guesses[current_turn][i])) {
+      //turning the tile green
       tile_buttons[current_turn * 6 + i].style('background-color', '#FFBF00')
+      //turning the key on the on-screen keyboard yellow
+      let letter = letter_buttons.find(button => button.id === guesses[current_turn][i]);
+      letter.style('background-color', '#FFBF00');
+      wordArray.splice(wordArray.indexOf(guesses[current_turn][i]), 1);
+    } else if(!wordArray.includes(guesses[current_turn][i])) {
+      //turning the tile gray
+      tile_buttons[current_turn * 6 + i].style('background-color', 'rgb(93,93,93)')
+      //turning the key on the on-screen keyboard gray
+      let letter = letter_buttons.find(button => button.id === guesses[current_turn][i]);
+      letter.style('background-color', 'rgb(93,93,93)');
+      wordArray.splice(wordArray.indexOf(guesses[current_turn][i]), 1);
     }
   }
 }
@@ -143,12 +174,38 @@ function keyPressed () {
   } else if (keyCode === BACKSPACE) {
     handle_input('⌫');
   } else if (keyCode === ENTER) {
-    check_if_correct();
-    if (current_turn < 5) {
+    r = check_if_correct();
+    if (current_turn < 5 && r == 3) {
       current_turn ++;
-    }
-    current_letter = 0;
+      current_letter = 0;
+    } 
   }
+}
+
+function displayMessage(msg) {
+  if (window.messageEl) { //deleting current message element if it exists
+    window.messageEl.remove();
+  }
+  //message container
+  window.messageEl = createDiv('');
+  window.messageEl.class('message-container');
+  window.messageEl.position(windowWidth/2, windowHeight/3);
+  //message content
+  let content = createDiv(msg);
+  content.parent(window.messageEl);
+  content.class('message content');
+  window.messageEl.html(msg);
+  //X button
+  let closeButton = createButton('X');
+  closeButton.parent(window.messageEl);
+  closeButton.class('close-button');
+  closeButton.mousePressed(() => {
+    window.messageEl.remove();
+    window.messageEl = null;
+  });
+  //styling
+  window.messageEl.style('background-color', 'rgb(0,255,0)');
+
 }
 
 async function startGame () {
