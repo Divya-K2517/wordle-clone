@@ -78,13 +78,11 @@ function handle_input(letter) {
     guesses[current_turn][current_letter] = '';
     updateTileDisplay();
   } else if (letter == 'ENTER'){
-    if (current_turn < 5 && check_if_correct()) {
+    r = check_if_correct();
+    if (current_turn < 5 && r == 3) {
       current_turn ++;
       current_letter = 0;
-    } else if (current_turn == 5) {
-      check_if_correct();
-    }
-    
+    }    
   }
   else {
     guesses[current_turn][current_letter] = letter;
@@ -124,7 +122,7 @@ function updateTileDisplay () {
 }
 
 function updateColors() {
-  const wordArray = Array.from(word);
+  let wordArray = Array.from(word);
   for (let i=0; i<6; i++) {
     if (guesses[current_turn][i] == wordArray[i]) {
       //turning the tile green
@@ -132,21 +130,24 @@ function updateColors() {
       //turning the key on the on-screen keyboard green
       let letter = letter_buttons.find(button => button.id === guesses[current_turn][i]);
       letter.style('background-color', '#538d4e');
-      wordArray.splice(wordArray.indexOf(guesses[current_turn][i]), 1);
+      wordArray[i] = null;
+      //wordArray.splice(wordArray.indexOf(guesses[current_turn][i]), 1);
     } else if(wordArray.includes(guesses[current_turn][i])) {
-      //turning the tile green
+      //turning the tile yellow
       tile_buttons[current_turn * 6 + i].style('background-color', '#FFBF00')
       //turning the key on the on-screen keyboard yellow
       let letter = letter_buttons.find(button => button.id === guesses[current_turn][i]);
       letter.style('background-color', '#FFBF00');
-      wordArray.splice(wordArray.indexOf(guesses[current_turn][i]), 1);
+      wordArray[i] = null;
+      //wordArray.splice(wordArray.indexOf(guesses[current_turn][i]), 1);
     } else if(!wordArray.includes(guesses[current_turn][i])) {
       //turning the tile gray
       tile_buttons[current_turn * 6 + i].style('background-color', 'rgb(93,93,93)')
       //turning the key on the on-screen keyboard gray
       let letter = letter_buttons.find(button => button.id === guesses[current_turn][i]);
       letter.style('background-color', 'rgb(93,93,93)');
-      wordArray.splice(wordArray.indexOf(guesses[current_turn][i]), 1);
+      wordArray[i] = null;
+      //wordArray.splice(wordArray.indexOf(guesses[current_turn][i]), 1);
     }
   }
 }
