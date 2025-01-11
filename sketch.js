@@ -30,12 +30,13 @@ function setup() { //runs once when the program starts
   draw_keyboard();
 }
 function draw() { //called continously
-  background(0);
+  background(248, 237, 235);
    //creating title
    textAlign(CENTER);
    textStyle(BOLD);
    textSize(50);
-   fill(255); //title color
+   fill(70, 18, 32); //title color
+   textFont('Courier New')
    text("Wordle (dupe)", windowWidth/2, windowHeight/10);
 }
 
@@ -87,9 +88,15 @@ function draw_board() {
       //draw tile
       let button = createButton();
       button.id = `button${i}_${j}`;
-      button.html(guesses[i][j]);
       button.size(40,40);
       button.position(j * 50 + windowWidth/2.5, i * 60 + windowHeight/6);
+      //style
+      button.style('font-family', 'Monospace, Courier New');
+      button.style('font-weight', 'bold');
+      button.style('color', 'rgb(70, 18, 32)')
+      button.style('border', '2px solid rgb(70, 18, 32)');
+      button.html(guesses[i][j]);
+      
       tile_buttons.push(button);
     }
   }
@@ -161,10 +168,10 @@ function updateColors() {
   for (let i=0; i<6; i++) {
     if (guesses[current_turn][i] == wordArray[i]) { 
       //turning the tile green
-      tile_buttons[current_turn * 6 + i].style('background-color', '#538d4e');
+      tile_buttons[current_turn * 6 + i].style('background-color', 'rgb(140, 47, 57)');
       //turning the key on the on-screen keyboard green
       let letter = letter_buttons.find(button => button.id === guesses[current_turn][i]);
-      letter.style('background-color', '#538d4e');
+      letter.style('background-color', 'rgb(140, 47, 57)');
       wordArray[i] = null;
       coloredIndices.add(i);
     }
@@ -174,10 +181,10 @@ function updateColors() {
     if (!coloredIndices.has(i)) {
       let index = wordArray.indexOf(guesses[current_turn][i]); //correct index of the letter
       if (index !== -1) { //index == -1 if the letter in not found in the correct word
-        tile_buttons[current_turn * 6 + i].style('background-color', 'rgb(255,255,0)');
+        tile_buttons[current_turn * 6 + i].style('background-color', 'rgb(255, 181, 167)');
         
         let letter = letter_buttons.find(button => button.id === guesses[current_turn][i]);
-        letter.style('background-color', 'rgb(255,255,0)');
+        letter.style('background-color', 'rgb(255, 181, 167)');
         wordArray[index] = null;
         coloredIndices.add(i);
       }
@@ -187,10 +194,10 @@ function updateColors() {
   for (let i=0; i<6; i++) { 
     if (!coloredIndices.has(i) ){
       //turning the tile gray
-      tile_buttons[current_turn * 6 + i].style('background-color', 'rgb(93,93,93)');
+      tile_buttons[current_turn * 6 + i].style('background-color', 'rgb(214, 204, 194)');
       //turning the key on the on-screen keyboard yellow
       let letter = letter_buttons.find(button => button.id === guesses[current_turn][i]);
-      letter.style('background-color', 'rgb(93,93,93)');
+      letter.style('background-color', 'rgb(214, 204, 194)');
       wordArray[i] = null;
     }
   }
@@ -204,7 +211,11 @@ function draw_keyboard() {
       letter_key.html(keyboard[i][j]);
       letter_key.size(60,50);
       letter_key.position(j * 60 + windowWidth/3.5 + (i%2)*30, i * 60 + windowHeight * (2.5/3.5));
-
+      //style
+      letter_key.style('font-family', 'Monospace, Courier New')
+      letter_key.style('font-weight', 'bold');
+      letter_key.style('color', 'rgb(70, 18, 32)')
+      letter_key.style('border', '1px solid rgb(70, 18, 32)');
       let letter = keyboard[i][j];
       letter_key.mousePressed(() => handle_input(letter));
 
