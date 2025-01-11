@@ -37,7 +37,6 @@ function draw() { //called continously
    textSize(50);
    fill(255); //title color
    text("Wordle (dupe)", windowWidth/2, windowHeight/10);
-
 }
 
 async function loadwords() {
@@ -48,16 +47,38 @@ async function loadwords() {
         .split('\n')
         .filter(line => line.trim() !== '')
         .map(line => {
-          const word = line.split(',')[1];
+          const word = line.split(',')[2];
           return word ? word.trim().toUpperCase() : null;
         })
         .filter(word => word !== null)
         .map(word => word.toUpperCase());
+    console.log('loaded words');
+}
+
+async function load_answers () {
+  const responseA = await fetch('filtered_possible_answers.csv');
+  const dataA = await responseA.text();
+
+  window.possible_A = dataA
+      .split('\n')
+      .filter(line => line.trim() !== '')
+      .map(line => {
+        const word = line.split(',')[2];
+        return word ? word.trim().toUpperCase() : null;
+      })
+      .filter(word => word !== null)
+      .map(word => word.toUpperCase());
+
+  console.log('loaded possible answers');
 }
 
 
 function generate_word() {
-    return window.list[Math.floor(Math.random() * (window.list.length))];
+  if (!window.possible_A || window.possible_A.length === 0) {
+    console.error("Possible answers list is empty or undefined");
+    return null;
+  }
+  return window.possible_A[Math.floor(Math.random() * (window.possible_A.length))];
 }
 
 function draw_board() {
@@ -113,7 +134,9 @@ function check_if_correct() { //1 = correct answer, 2 = not enough letters, 3 = 
     displayMessage("Not a valid word");
     return 4;
   }
+
   updateColors();
+
   if (word_guessed == word) {
     displayMessage("Congrats, you guessed the word!")
     return 1;
@@ -152,6 +175,7 @@ function updateColors() {
       let index = wordArray.indexOf(guesses[current_turn][i]); //correct index of the letter
       if (index !== -1) { //index == -1 if the letter in not found in the correct word
         tile_buttons[current_turn * 6 + i].style('background-color', 'rgb(255,255,0)');
+        
         let letter = letter_buttons.find(button => button.id === guesses[current_turn][i]);
         letter.style('background-color', 'rgb(255,255,0)');
         wordArray[index] = null;
@@ -231,6 +255,10 @@ function displayMessage(msg) {
 
 async function startGame () {
   await loadwords();
+  await load_answers();
   word = generate_word(); //generates a word for player to guess
   console.log(word);
+  if (!word) {
+    console.error("Failed to generate a word");
+  }
 }
