@@ -1,3 +1,5 @@
+
+
 let CELL_GAP = 10;
 let CELL_SIZE = 60;
 let guesses;
@@ -84,8 +86,9 @@ function handle_input(letter) {
     if (current_turn < 5 && r == 3) {
       current_turn ++;
       current_letter = 0;
-    }    
+    } 
   }
+
   else {
     guesses[current_turn][current_letter] = letter;
     if (current_letter < 5) {
@@ -95,7 +98,7 @@ function handle_input(letter) {
   } 
 }
 
-function check_if_correct() { //1 = correct answer, 2 = not enough letters, 3 = enough letters but wrong
+function check_if_correct() { //1 = correct answer, 2 = not enough letters, 3 = enough letters but wrong, 4 = not a valid word
   let word_guessed = '';
   for (let i=0; i<6; i++) {
     word_guessed += guesses[current_turn][i];
@@ -105,6 +108,11 @@ function check_if_correct() { //1 = correct answer, 2 = not enough letters, 3 = 
     return 2;
   }
   console.log(word_guessed);
+
+  if (!window.list.includes(word_guessed)) {
+    displayMessage("Not a valid word");
+    return 4;
+  }
   updateColors();
   if (word_guessed == word) {
     displayMessage("Congrats, you guessed the word!")
@@ -137,14 +145,12 @@ function updateColors() {
       wordArray[i] = null;
       coloredIndices.add(i);
     }
-    
-    console.log(wordArray);
   }
-
-  for (let i=0; i<6; i++) { //yellow tiles
+   //yellow tiles
+  for (let i=0; i<6; i++) {
     if (!coloredIndices.has(i)) {
-      let index = wordArray.indexOf(guesses[current_turn][i]);
-      if (index !== -1) {
+      let index = wordArray.indexOf(guesses[current_turn][i]); //correct index of the letter
+      if (index !== -1) { //index == -1 if the letter in not found in the correct word
         tile_buttons[current_turn * 6 + i].style('background-color', 'rgb(255,255,0)');
         let letter = letter_buttons.find(button => button.id === guesses[current_turn][i]);
         letter.style('background-color', 'rgb(255,255,0)');
@@ -153,8 +159,8 @@ function updateColors() {
       }
     }
   }
-
-  for (let i=0; i<6; i++) { //gray tiles
+  //gray tiles
+  for (let i=0; i<6; i++) { 
     if (!coloredIndices.has(i) ){
       //turning the tile gray
       tile_buttons[current_turn * 6 + i].style('background-color', 'rgb(93,93,93)');
