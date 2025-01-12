@@ -129,13 +129,19 @@ function handle_input(letter) {
 
 function check_if_correct() { //1 = correct answer, 2 = not enough letters, 3 = enough letters but wrong, 4 = not a valid word
   let word_guessed = '';
+  let filled_letters = 0;
   for (let i=0; i<6; i++) {
+    if (guesses[current_turn][i] !== '') {
+      filled_letters++;
+    }
     word_guessed += guesses[current_turn][i];
   }
-  if (word_guessed.length < 6) {
+  if (filled_letters < 6) {
     displayMessage("Not enough letters");
+    console.log('detected less than 6 letters');
     return 2;
   }
+  console.log(filled_letters);
   console.log(word_guessed);
 
   if (!window.list.includes(word_guessed)) {
@@ -218,7 +224,7 @@ function draw_keyboard() {
       letter_key.style('color', 'rgb(70, 18, 32)')
       letter_key.style('border', '1px solid rgb(70, 18, 32)');
       letter_key.style('border-radius', '8px');
-      letter_key.style('box-shadow', '0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.02)')
+      letter_key.style('box-shadow', '0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.02)');
       let letter = keyboard[i][j];
       letter_key.mousePressed(() => handle_input(letter));
 
@@ -263,7 +269,19 @@ function displayMessage(msg) {
     window.messageEl = null;
   });
   //styling
-  window.messageEl.style('background-color', 'rgb(0,255,0)');
+  window.messageEl.style('background-color', 'rgb(248, 237, 235');
+  window.messageEl.style('padding', '50px');
+  window.messageEl.style('box-shadow', '0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.3)');
+  window.messageEl.style('border', '1px solid rgb(70, 18, 32)');
+  window.messageEl.style('border-radius', '8px');
+  window.messageEl.style('font-family', 'Monospace, Courier New')
+  window.messageEl.style('font-weight', 'bold');
+  //X button styling
+  closeButton.style('position', 'absolute'); // position absolutely within relative parent
+  closeButton.style('top', '10px'); 
+  closeButton.style('right', '10px');  
+  closeButton.style('background-color', 'transparent');
+  closeButton.style('border-width', '1px');
 
 }
 
