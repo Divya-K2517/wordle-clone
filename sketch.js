@@ -95,6 +95,7 @@ function draw_board() {
       button.style('font-weight', 'bold');
       button.style('color', 'rgb(70, 18, 32)')
       button.style('border', '2px solid rgb(70, 18, 32)');
+      button.style('border-radius', '4px');
       button.html(guesses[i][j]);
       
       tile_buttons.push(button);
@@ -210,12 +211,14 @@ function draw_keyboard() {
       letter_key.id = `${keyboard[i][j]}`;
       letter_key.html(keyboard[i][j]);
       letter_key.size(60,50);
-      letter_key.position(j * 60 + windowWidth/3.5 + (i%2)*30, i * 60 + windowHeight * (2.5/3.5));
+      letter_key.position((j * (60+10)) + windowWidth/3.5 + (i%2)*30 , i * 60 + windowHeight * (2.5/3.5));
       //style
       letter_key.style('font-family', 'Monospace, Courier New')
       letter_key.style('font-weight', 'bold');
       letter_key.style('color', 'rgb(70, 18, 32)')
       letter_key.style('border', '1px solid rgb(70, 18, 32)');
+      letter_key.style('border-radius', '8px');
+      letter_key.style('box-shadow', '0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.02)')
       let letter = keyboard[i][j];
       letter_key.mousePressed(() => handle_input(letter));
 
