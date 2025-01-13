@@ -13,6 +13,8 @@ let keyboard = [
 ];
 let current_turn; //guess that the user is on
 let current_letter;
+let games_played = 0;
+let win_rate = 0;
 
 function setup() { //runs once when the program starts
   createCanvas(windowWidth,windowHeight);
@@ -28,6 +30,7 @@ function setup() { //runs once when the program starts
   current_letter = 0;
   draw_board();
   draw_keyboard();
+  new_word_button();
 }
 function draw() { //called continously
   background(248, 237, 235);
@@ -38,6 +41,7 @@ function draw() { //called continously
    fill(70, 18, 32); //title color
    textFont('Courier New')
    text("Wordle (dupe)", windowWidth/2, windowHeight/10);
+   draw_stats();
 }
 
 async function loadwords() {
@@ -153,12 +157,16 @@ function check_if_correct() { //1 = correct answer, 2 = not enough letters, 3 = 
 
   if (word_guessed == word) {
     displayMessage("Congrats, you guessed the word!")
+    games_played += 1;
     return 1;
   } else if (word_guessed != word && current_turn == 5) {
     displayMessage("Incorrect, the word was: `${word}`");
+    games_played += 1;
     return 3;
   }
   return 3;
+
+
 }
 
 function updateTileDisplay () {
@@ -246,7 +254,42 @@ function keyPressed () {
     } 
   }
 }
-
+function new_word_button() {
+  new_word_b = createButton();
+  new_word_b.html('new word');
+  new_word_b.position(windowWidth*(11/12), windowHeight*(1/36));
+  new_word_b.mousePressed(() => {
+    word = generate_word();
+    console.log('new word generated');
+    guesses = [ //six guesses
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''],
+      ['', '', '', '', '', ''] ]
+    current_turn = 0;
+    current_letter = 0;
+    //removing current buttons
+    tile_buttons.forEach(button => button.remove());
+    letter_buttons.forEach(button => button.remove());
+    // clearing arrays
+    tile_buttons = [];
+    letter_buttons = [];
+    // new board and keyboard buttons
+    draw_board();
+    draw_keyboard();
+  });
+  //styling
+  new_word_b.style('background-color', 'rgb(248, 237, 235');
+  new_word_b.style('padding', '10px');
+  new_word_b.style('font-family', 'Monospace, Courier New')
+  new_word_b.style('font-weight', 'bold');
+  new_word_b.style('box-shadow', '0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.12)');
+}
+function draw_stats() {
+  window.stats.html(`games played: ${games_played}<br>win rate: ${win_rate}%`);
+}
 function displayMessage(msg) {
   if (window.messageEl) { //deleting current message element if it exists
     window.messageEl.remove();
@@ -282,7 +325,6 @@ function displayMessage(msg) {
   closeButton.style('right', '10px');  
   closeButton.style('background-color', 'transparent');
   closeButton.style('border-width', '1px');
-
 }
 
 async function startGame () {
@@ -293,4 +335,9 @@ async function startGame () {
   if (!word) {
     console.error("Failed to generate a word");
   }
+  //so that a new stats div is created every frame
+  window.stats = createDiv('');
+  window.stats.class('message-container');
+  window.stats.position(windowWidth*(1/48), windowHeight*(1/48));
+  window.stats.parent('body'); 
 }
