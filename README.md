@@ -1,7 +1,8 @@
 # 6 letter Wordle clone
 
 <img width="600" alt="Screenshot 2025-01-14 at 12 32 05 PM" src="https://github.com/user-attachments/assets/95653dfc-acce-4a7d-8f85-c2a5bce4aab4" />
-![My Movie 1](https://github.com/user-attachments/assets/a63989d0-f3dc-4f83-a232-8a46d3f41096)
+![My Movie 1](https://github.com/user-attachments/assets/b85437e9-9eee-4346-abad-0aeeb3749a34)
+
 
 **Description:**  
 Wordle, but with 6 letters
