@@ -41,7 +41,7 @@ function draw() { //called continously
    textSize(50);
    fill(70, 18, 32); //title color
    textFont('Courier New')
-   text("Wordle (dupe)", windowWidth/2, windowHeight/10);
+   text("Wordle (cloned)", windowWidth/2, windowHeight/10);
    draw_stats();
 }
 
@@ -162,7 +162,7 @@ function check_if_correct() { //1 = correct answer, 2 = not enough letters, 3 = 
     games_won += 1;
     return 1;
   } else if (word_guessed != word && current_turn == 5) {
-    displayMessage("Incorrect, the word was: `${word}`");
+    displayMessage(`Incorrect, the word was: ${word}`);
     games_played += 1;
     return 3;
   }
@@ -291,7 +291,7 @@ function new_word_button() {
 }
 function draw_stats() {
   if (games_played != 0) {
-    win_rate = (games_won/games_played) * 100;
+    win_rate = int((games_won/games_played) * 100);
   }
   window.stats.html(`games played: ${games_played}<br>win rate: ${win_rate}%`);
   window.stats.style('font-family', 'Monospace, Courier New')
@@ -305,7 +305,7 @@ function displayMessage(msg) {
   //message container
   window.messageEl = createDiv('');
   window.messageEl.class('message-container');
-  window.messageEl.position(windowWidth/2, windowHeight/3);
+  window.messageEl.position(windowWidth*(2/5), windowHeight/3);
   //message content
   let content = createDiv(msg);
   content.parent(window.messageEl);
