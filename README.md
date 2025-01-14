@@ -1,5 +1,6 @@
 # 6 letter Wordle clone
 
+![My Movie 1](https://github.com/user-attachments/assets/a63989d0-f3dc-4f83-a232-8a46d3f41096)
 
 **Description:**  
 Wordle, but with 6 letters
