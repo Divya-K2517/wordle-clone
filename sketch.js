@@ -15,6 +15,7 @@ let current_turn; //guess that the user is on
 let current_letter;
 let games_played = 0;
 let win_rate = 0;
+let games_won = 0;
 
 function setup() { //runs once when the program starts
   createCanvas(windowWidth,windowHeight);
@@ -158,6 +159,7 @@ function check_if_correct() { //1 = correct answer, 2 = not enough letters, 3 = 
   if (word_guessed == word) {
     displayMessage("Congrats, you guessed the word!")
     games_played += 1;
+    games_won += 1;
     return 1;
   } else if (word_guessed != word && current_turn == 5) {
     displayMessage("Incorrect, the word was: `${word}`");
@@ -165,8 +167,6 @@ function check_if_correct() { //1 = correct answer, 2 = not enough letters, 3 = 
     return 3;
   }
   return 3;
-
-
 }
 
 function updateTileDisplay () {
@@ -212,7 +212,9 @@ function updateColors() {
       tile_buttons[current_turn * 6 + i].style('background-color', 'rgb(214, 204, 194)');
       //turning the key on the on-screen keyboard yellow
       let letter = letter_buttons.find(button => button.id === guesses[current_turn][i]);
-      letter.style('background-color', 'rgb(214, 204, 194)');
+      if (letter.style('background-color') != 'rgb(255, 181, 167)' && letter.style('background-color') != 'rgb(140, 47, 57)') {
+      letter.style('background-color', 'rgb(214, 204, 194)'); 
+      }
       wordArray[i] = null;
     }
   }
@@ -288,7 +290,13 @@ function new_word_button() {
   new_word_b.style('box-shadow', '0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.12)');
 }
 function draw_stats() {
+  if (games_played != 0) {
+    win_rate = (games_won/games_played) * 100;
+  }
   window.stats.html(`games played: ${games_played}<br>win rate: ${win_rate}%`);
+  window.stats.style('font-family', 'Monospace, Courier New')
+  window.stats.style('font-weight', 'bold');
+  window.stats.style('color', 'rgb(70, 18, 32)');
 }
 function displayMessage(msg) {
   if (window.messageEl) { //deleting current message element if it exists
