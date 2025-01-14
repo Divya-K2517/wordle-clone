@@ -1,9 +1,9 @@
 # 6 letter Wordle clone
 
-<img width="600" alt="Screenshot 2025-01-14 at 12 32 05 PM" src="https://github.com/user-attachments/assets/95653dfc-acce-4a7d-8f85-c2a5bce4aab4" />
+<img width="500" alt="Screenshot 2025-01-14 at 12 32 05 PM" src="https://github.com/user-attachments/assets/95653dfc-acce-4a7d-8f85-c2a5bce4aab4" />
 
 <div align="left">
-  <img src="./game_demo.gif" alt="Game Demo" width="600"/>
+  <img src="./game_demo.gif" alt="Game Demo" width="500"/>
 </div>
 
 **Description:**  
